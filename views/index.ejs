@@ -82,6 +82,29 @@
           );
         });
       });
+
+      $('#saveQuiz').click(function () {
+        $.ajax({
+            type: "POST",
+            url: "quiz",
+            data: { pic1: "sdkjhaksth", pic2: "srheurguag" }
+        }).done(function (data) {
+          FB.ui(
+            {
+              method    : 'feed',
+              link      : 'http://agile-springs-1772.herokuapp.com/quiz/' + data.id,
+              caption   : '<%= user.name %> challenged you!'
+            },
+            function (response) {
+              // If response is null the user canceled the dialog
+              if (response != null) {
+                logResponse(response);
+              }
+            }
+          );
+        });
+      });
+
     </script>
 
     <!--[if IE]>
@@ -153,6 +176,8 @@
 
   <p>Your query was:<br /><%= JSON.stringify(req.query) %></p>
   <img src="<%= req.query.pic1 %>" />
+
+  <a href="#" id="saveQuiz">save quiz</a>
 
   </body>
 </html>

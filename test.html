@@ -1,0 +1,21 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <title></title>
+    <script src="public/scripts/jquery.min.js"></script>
+</head>
+<body>
+    <script type="text/javascript">
+        function send() {
+            $.ajax({
+                url: 'http://agile-springs-1772.herokuapp.com/quiz',
+                type: 'GET',
+                data: { pic1: 'sdkjthat' }
+            });
+        }
+    </script>
+
+    <a href="#" onclick="send()">send req</a>
+</body>
+</html>
