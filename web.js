@@ -1,6 +1,7 @@
 var async   = require('async');
 var express = require('express');
 var util    = require('util');
+var https   = require('https');
 
 
 // inside if statement
@@ -96,6 +97,25 @@ function handle_facebook_request(req, res) {
           req.friends_using_app = result;
           cb();
         });
+      },
+      function(cb) {
+        console.log("Sending a request..");
+          https.get({
+              host: "api.500px.com",
+              path: "/v1/photos?feature=popular&consumer_key=0Cjz9Rp5NCcqyT2xuuOQWgyYSIQDBiVvWwMo9I5a"
+          }, function (res) {
+            var pageData = "";
+            res.on('data', function (chunk) {
+              pageData += chunk;
+            });
+            res.on('end', function(){
+              req.imageData = pageData;
+              cb();
+            });
+        }).on('error', function (e) {
+            console.log("Got error: " + e.message);
+            cb();
+        });
       }
     ], function() {
       render_page(req, res);
@@ -113,7 +133,6 @@ function handleQuizGet(req, res) {
             layout: false,
             data: data
         });
-        //res.send(value);
     });
 
 }

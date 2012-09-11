@@ -17,6 +17,11 @@
         <script src="/js/vendor/modernizr-2.6.1.min.js"></script>
 
 
+    <script type="text/javascript">
+
+    var imageData = <%- req.imageData %>;
+
+    </script>
 
     <script type="text/javascript" src="/scripts/jquery.min.js"></script>
 
@@ -29,7 +34,9 @@
       }
       
 
+
       $(function(){
+      <% if (user) { %>
         // Set up so we handle click on the buttons
         $('#postToWall').click(function() {
 
@@ -133,6 +140,7 @@
           );
         });
       });
+      <% } %>
 
     </script>
 
@@ -208,11 +216,14 @@
       <p>Welcome to <span>500quiz</span></p>
     </section>
 
+      <% if (user) { %>
   <a href="#" class="facebook-button" id="postToWall" data-url="<%= url() %>">
     <span class="plus">Post to Wall</span>
   </a>
   
         <span>Enter a word to describe the three images you choose: </span><input id="wordToGuess" />
+<% } %>
+
         <div id="main_content"></div>
 
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>
@@ -221,15 +232,11 @@
         <script>
 
 
-        var url = 'https://api.500px.com/v1/photos?feature=popular&current_page=5&consumer_key=0Cjz9Rp5NCcqyT2xuuOQWgyYSIQDBiVvWwMo9I5a';
-
         var photo_urls = [];
 
         $(function() {
 
-            $.get(url, function(data){
-
-            var photos = data['photos'];
+            var photos = imageData['photos'];
 
             var counter = 0;
 
@@ -245,8 +252,8 @@
                 img.click(( function() {
                         var index = i;
                         var temp_img = img;
-                            photo_urls.push(temp_img.attr("src"));
                         return function () {
+                           photo_urls.push(temp_img.attr("src"));
                             if ( counter >= 3) {
                                 return;
                             }
@@ -262,8 +269,6 @@
 
                 $('#main_content').append(img); //'.photos[i].image_url.'
             }
-
-            });
 
         });
 
