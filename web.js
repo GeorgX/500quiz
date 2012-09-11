@@ -1,6 +1,7 @@
 var async   = require('async');
 var express = require('express');
 var util    = require('util');
+//var redis = require('redis').createClient();
 
 // create an express webserver
 var app = express.createServer(
