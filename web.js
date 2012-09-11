@@ -108,7 +108,12 @@ function handle_facebook_request(req, res) {
 
 function handleQuizGet(req, res) {
     redis.get(req.params.id, function (err, value) {
-        res.send(value);
+        var data = JSON.parse(value);
+        res.render("show_quiz.ejs", {
+            layout: false,
+            data: data
+        });
+        //res.send(value);
     });
 
 }

@@ -1,25 +1,31 @@
 <!DOCTYPE html>
-<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
-<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
-<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-        <title></title>
-        <meta name="description" content="">
-        <meta name="viewport" content="width=device-width">
+<html xmlns:fb="http://ogp.me/ns/fb#" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0, user-scalable=yes" />
 
-        <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+    <title><%= app.name %></title>
+    <link rel="stylesheet" href="stylesheets/screen.css" media="Screen" type="text/css" />
+    <link rel="stylesheet" href="stylesheets/mobile.css" media="handheld, only screen and (max-width: 480px), only screen and (max-device-width: 480px)" type="text/css" />
 
-        <link rel="stylesheet" href="/css/normalize.css">
-        <link rel="stylesheet" href="/css/main.css">
-        <script src="/js/vendor/modernizr-2.6.1.min.js"></script>
+    <!--[if IEMobile]>
+    <link rel="stylesheet" href="mobile.css" media="screen" type="text/css"  />
+    <![endif]-->
 
-
+    <!-- These are Open Graph tags.  They add meta data to your  -->
+    <!-- site that facebook uses when your content is shared     -->
+    <!-- over facebook.  You should fill these tags in with      -->
+    <!-- your data.  To learn more about Open Graph, visit       -->
+    <!-- 'https://developers.facebook.com/docs/opengraph/'       -->
+    <meta property="og:title" content="<%= app.name %>" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="<%= url() %>" />
+    <meta property="og:image" content="<%= url('/logo.png') %>" />
+    <meta property="og:site_name" content="<%= app.name %>" />
+    <meta property="og:description" content="My first app" />
+    <meta property="fb:app_id" content="<%= app.id %>" />
 
     <script type="text/javascript" src="/scripts/jquery.min.js"></script>
-
 
     <script type="text/javascript">
       function logResponse(response) {
@@ -27,7 +33,6 @@
           console.log('The response was', response);
         }
       }
-      
 
       $(function(){
         // Set up so we handle click on the buttons
@@ -38,10 +43,10 @@
                 type: "GET",
                 url: "quiz",
                 data: {
-                    pic1: photo_urls[0],
-                    pic2: photo_urls[1],
-                    pic3: photo_urls[2],
-                    word: $('#wordToGuess')[0].value
+                    pic1: "http://pcdn.500px.net/13646937/fb75dd4377fb79d796c22c8baea701dc47258eae/4.jpg",
+                    pic2: "http://pcdn.500px.net/13646935/3eab20c23edf8a74b33b0188827fa79c5fe00aef/4.jpg",
+                    pic3: "http://pcdn.500px.net/13646923/d44659c734dfa94d71cdba59e7b2855d21ed8b3f/4.jpg",
+                    word: "holiday"
                 }
             }).done(function (data) {
               data = JSON.parse(data);
@@ -136,23 +141,15 @@
 
     </script>
 
-
-            <!--[if IE]>
+    <!--[if IE]>
       <script type="text/javascript">
         var tags = ['header', 'section'];
         while(tags.length)
           document.createElement(tags.pop());
       </script>
     <![endif]-->
-    
-    
-        </head>
-    <body>
-
-        <!--[if lt IE 7]>
-            <p class="chromeframe">You are using an outdated browser. <a href="http://browsehappy.com/">Upgrade your browser today</a> or <a href="http://www.google.com/chromeframe/?redirect=true">install Google Chrome Frame</a> to better experience this site.</p>
-        <![endif]-->
-
+  </head>
+  <body>
     <div id="fb-root"></div>
     <script type="text/javascript">
       window.fbAsyncInit = function() {
@@ -190,8 +187,7 @@
 
     <header class="clearfix">
       <% if (user) { %>
-
-        <h1>500Quiz</h1>
+      <p id="picture" style="background-image: url(https://graph.facebook.com/<%= user.id %>/picture?type=normal)"></p>
 
       <div>
         <h1>Welcome, <strong><%= user.name %></strong></h1>
@@ -211,71 +207,12 @@
   <a href="#" class="facebook-button" id="postToWall" data-url="<%= url() %>">
     <span class="plus">Post to Wall</span>
   </a>
-  
-        <span>Enter a word to describe the three images you choose: </span><input id="wordToGuess" />
-        <div id="main_content"></div>
 
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>
-        <script>window.jQuery || document.write('<script src="/js/vendor/jquery-1.8.0.min.js"><\/script>')</script>
-        <script src="/js/plugins.js"></script>
-        <script>
+  <p>Your query was:<br /><%= JSON.stringify(req.query) %></p>
+  <img src="<%= req.query.pic1 %>" />
 
+  <a id="saveQuiz">save quiz</a>
 
-        var url = 'https://api.500px.com/v1/photos?feature=popular&current_page=5&consumer_key=0Cjz9Rp5NCcqyT2xuuOQWgyYSIQDBiVvWwMo9I5a';
-
-        var photo_urls = [];
-
-        $(function() {
-
-            $.get(url, function(data){
-
-            var photos = data['photos'];
-
-            var counter = 0;
-
-
-            for (var i=0; i < photos.length; i++ ) {
-                //console.log(photos[i]);
-
-
-
-                var image = photos[i].image_url;
-                console.log(photos[i]);
-                var img = $('<img class="image" src="'+image+'" />');
-                img.click(( function() {
-                        var index = i;
-                        var temp_img = img;
-                            photo_urls.push(temp_img.attr("src"));
-                        return function () {
-                            if ( counter >= 3) {
-                                return;
-                            }
-                          console.log(index);
-                          temp_img.css("border", "solid 2px #EE0000");
-                          counter++;
-                          console.log(counter);
-                        };
-
-
-                  })()
-                );
-
-                $('#main_content').append(img); //'.photos[i].image_url.'
-            }
-
-            });
-
-        });
-
-
-</script>
-
-        <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
-        <script>
-            var _gaq=[['_setAccount','UA-XXXXX-X'],['_trackPageview']];
-            (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
-            g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
-            s.parentNode.insertBefore(g,s)}(document,'script'));
-        </script>
-    </body>
+  </body>
 </html>
+

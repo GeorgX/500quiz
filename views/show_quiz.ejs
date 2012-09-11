@@ -1,0 +1,29 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <title></title>
+</head>
+<body>
+
+<img src="<%= data.pic1 %>"/>
+<img src="<%= data.pic2 %>"/>
+<img src="<%= data.pic3 %>"/>
+
+<input id="guessInput"/><button id="guessButton">Guess</button>
+
+<script type="text/javascript">
+
+    var secretWord = "<%= data.word %>";
+
+    document.getElementById("guessButton").onclick = function () {
+        if (document.getElementById("guessInput").value === secretWord) {
+            alert("Right guess!");
+        } else {
+            alert("Wrong guess!");
+        }
+    };
+
+</script>
+</body>
+</html>
