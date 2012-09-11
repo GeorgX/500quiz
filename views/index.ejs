@@ -37,7 +37,35 @@
       $(function(){
         // Set up so we handle click on the buttons
         $('#postToWall').click(function() {
-          FB.ui(
+
+
+            $.ajax({
+                type: "GET",
+                url: "quiz",
+                data: {
+                    pic1: "http://pcdn.500px.net/13646937/fb75dd4377fb79d796c22c8baea701dc47258eae/4.jpg",
+                    pic2: "http://pcdn.500px.net/13646935/3eab20c23edf8a74b33b0188827fa79c5fe00aef/4.jpg",
+                    pic3: "http://pcdn.500px.net/13646923/d44659c734dfa94d71cdba59e7b2855d21ed8b3f/4.jpg",
+                    word: "holiday"
+                }
+            }).done(function (data) {
+              data = JSON.parse(data);
+              FB.ui(
+                {
+                  method    : 'feed',
+                  link      : 'http://agile-springs-1772.herokuapp.com/quiz/' + data.id,
+                  caption   : '<%= user.name %> challenged you!'
+                },
+                function (response) {
+                  // If response is null the user canceled the dialog
+                  if (response != null) {
+                    logResponse(response);
+                  }
+                }
+              );
+            });
+
+            /*FB.ui(
             {
               method    : 'feed',
               link      : 'http://agile-springs-1772.herokuapp.com/',
@@ -49,7 +77,8 @@
                 logResponse(response);
               }
             }
-          );
+          );*/
+
         });
 
         $('#sendToFriends').click(function() {
@@ -85,9 +114,14 @@
 
       $('#saveQuiz').click(function () {
         $.ajax({
-            type: "POST",
+            type: "GET",
             url: "quiz",
-            data: { pic1: "sdkjhaksth", pic2: "srheurguag" }
+            data: {
+                pic1: "http://pcdn.500px.net/13646937/fb75dd4377fb79d796c22c8baea701dc47258eae/4.jpg",
+                pic2: "http://pcdn.500px.net/13646935/3eab20c23edf8a74b33b0188827fa79c5fe00aef/4.jpg",
+                pic3: "http://pcdn.500px.net/13646923/d44659c734dfa94d71cdba59e7b2855d21ed8b3f/4.jpg",
+                word: "holiday"
+            }
         }).done(function (data) {
           FB.ui(
             {
@@ -177,7 +211,7 @@
   <p>Your query was:<br /><%= JSON.stringify(req.query) %></p>
   <img src="<%= req.query.pic1 %>" />
 
-  <a href="#" id="saveQuiz">save quiz</a>
+  <a id="saveQuiz">save quiz</a>
 
   </body>
 </html>
