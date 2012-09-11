@@ -39,8 +39,9 @@
         $('#postToWall').click(function() {
           FB.ui(
             {
-              method : 'feed',
-              link   : $(this).attr('data-url')
+              method    : 'feed',
+              link      : 'http://agile-springs-1772.herokuapp.com/',
+              caption   : '<%= user.name %> challenged you!'
             },
             function (response) {
               // If response is null the user canceled the dialog
@@ -81,6 +82,29 @@
           );
         });
       });
+
+      $('#saveQuiz').click(function () {
+        $.ajax({
+            type: "POST",
+            url: "quiz",
+            data: { pic1: "sdkjhaksth", pic2: "srheurguag" }
+        }).done(function (data) {
+          FB.ui(
+            {
+              method    : 'feed',
+              link      : 'http://agile-springs-1772.herokuapp.com/quiz/' + data.id,
+              caption   : '<%= user.name %> challenged you!'
+            },
+            function (response) {
+              // If response is null the user canceled the dialog
+              if (response != null) {
+                logResponse(response);
+              }
+            }
+          );
+        });
+      });
+
     </script>
 
     <!--[if IE]>
@@ -145,6 +169,15 @@
     <section id="get-started">
       <p>Welcome to <span>500quiz</span></p>
     </section>
+
+  <a href="#" class="facebook-button" id="postToWall" data-url="<%= url() %>">
+    <span class="plus">Post to Wall</span>
+  </a>
+
+  <p>Your query was:<br /><%= JSON.stringify(req.query) %></p>
+  <img src="<%= req.query.pic1 %>" />
+
+  <a href="#" id="saveQuiz">save quiz</a>
 
   </body>
 </html>

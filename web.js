@@ -2,6 +2,13 @@ var async   = require('async');
 var express = require('express');
 var util    = require('util');
 
+
+// inside if statement
+var rtg   = require("url").parse(process.env.REDISTOGO_URL);
+var redis = require("redis").createClient(rtg.port, rtg.hostname);
+redis.auth(rtg.auth.split(":")[1]);
+
+
 // create an express webserver
 var app = express.createServer(
   express.logger(),
@@ -99,5 +106,22 @@ function handle_facebook_request(req, res) {
   }
 }
 
+function handleQuizGet(req, res) {
+    redis.get(req.params.id, function (err, value) {
+        res.send(value);
+    });
+
+}
+
+function handleQuizPost(req, res) {
+    var id = ""+Math.round(Math.random() * 1e10);
+    var data = req.query;
+    data.id = id;
+    redis.set(id, JSON.stringify(data), function () {
+        res.send(JSON.stringify(data));
+    });
+}
+
 app.get('/', handle_facebook_request);
-app.post('/', handle_facebook_request);
+app.get('/quiz/:id', handleQuizGet);
+app.get('/quiz', handleQuizPost);
