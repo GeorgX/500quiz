@@ -6,10 +6,12 @@
 </head>
 <body>
 
-<img src="<%= data.pic1 %>"/>
-<img src="<%= data.pic2 %>"/>
-<img src="<%= data.pic3 %>"/>
-
+<div>
+    <img src="<%= data.pic1 %>"/>
+    <img src="<%= data.pic2 %>"/>
+    <img src="<%= data.pic3 %>"/>
+</div>
+<p>Your friend <%= data.ownerName %> has shared a quiz with you. Try to guess which word do there pictures represent!</p>
 <input id="guessInput"/><button id="guessButton">Guess</button>
 
 <script type="text/javascript">

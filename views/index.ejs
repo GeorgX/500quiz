@@ -17,270 +17,173 @@
         <script src="/js/vendor/modernizr-2.6.1.min.js"></script>
 
 
-    <script type="text/javascript">
+        <script type="text/javascript">
+            var imageData = <%- req.imageData %>;
+        </script>
 
-    var imageData = <%- req.imageData %>;
+        <script type="text/javascript" src="/scripts/jquery.min.js"></script>
 
-    </script>
+        <% if (user) { %>
+        <script type="text/javascript">
 
-    <script type="text/javascript" src="/scripts/jquery.min.js"></script>
-
-
-    <script type="text/javascript">
-      function logResponse(response) {
-        if (console && console.log) {
-          console.log('The response was', response);
-        }
-      }
-      
-
-
-      $(function(){
-      <% if (user) { %>
-        // Set up so we handle click on the buttons
-        $('#postToWall').click(function() {
-
-
-            $.ajax({
-                type: "GET",
-                url: "quiz",
-                data: {
-                    pic1: photo_urls[0],
-                    pic2: photo_urls[1],
-                    pic3: photo_urls[2],
-                    word: $('#wordToGuess')[0].value
+            function logResponse(response) {
+                if (console && console.log) {
+                    console.log('The response was', response);
                 }
-            }).done(function (data) {
-              data = JSON.parse(data);
-              FB.ui(
-                {
-                  method    : 'feed',
-                  link      : 'http://agile-springs-1772.herokuapp.com/quiz/' + data.id,
-                  caption   : '<%= user.name %> challenged you!'
-                },
-                function (response) {
-                  // If response is null the user canceled the dialog
-                  if (response != null) {
-                    logResponse(response);
-                  }
-                }
-              );
+            }
+
+            $(function(){
+
+                // Set up so we handle click on the buttons
+                $('#postToWall').click(function() {
+                    if (photo_urls.length < 3) {
+                        alert("You must choose three photos!");
+                        return;
+                    }
+                    $.ajax({
+                        type: "GET",
+                        url: "quiz",
+                        data: {
+                            pic1: photo_urls[0],
+                            pic2: photo_urls[1],
+                            pic3: photo_urls[2],
+                            word: $('#wordToGuess')[0].value,
+                            ownerId: '<%- user.id %>',
+                            ownerName: '<%- user.name %>'
+                        }
+                    }).done(function (data) {
+                        data = JSON.parse(data);
+                        FB.ui(
+                            {
+                                method    : 'feed',
+                                link      : 'http://agile-springs-1772.herokuapp.com/quiz/' + data.id,
+                                caption   : '<%= user.name %> challenged you!'
+                            },
+                            function (response) {
+                                // If response is null the user canceled the dialog
+                                if (response != null) {
+                                    logResponse(response);
+                                }
+                            }
+                        );
+                    });
+                });
+
             });
 
-            /*FB.ui(
-            {
-              method    : 'feed',
-              link      : 'http://agile-springs-1772.herokuapp.com/',
-              caption   : '<%= user.name %> challenged you!'
-            },
-            function (response) {
-              // If response is null the user canceled the dialog
-              if (response != null) {
-                logResponse(response);
-              }
-            }
-          );*/
-
-        });
-
-        $('#sendToFriends').click(function() {
-          FB.ui(
-            {
-              method : 'send',
-              link   : $(this).attr('data-url')
-            },
-            function (response) {
-              // If response is null the user canceled the dialog
-              if (response != null) {
-                logResponse(response);
-              }
-            }
-          );
-        });
-
-        $('#sendRequest').click(function() {
-          FB.ui(
-            {
-              method  : 'apprequests',
-              message : $(this).attr('data-message')
-            },
-            function (response) {
-              // If response is null the user canceled the dialog
-              if (response != null) {
-                logResponse(response);
-              }
-            }
-          );
-        });
-      });
-
-      $('#saveQuiz').click(function () {
-        $.ajax({
-            type: "GET",
-            url: "quiz",
-            data: {
-                pic1: "http://pcdn.500px.net/13646937/fb75dd4377fb79d796c22c8baea701dc47258eae/4.jpg",
-                pic2: "http://pcdn.500px.net/13646935/3eab20c23edf8a74b33b0188827fa79c5fe00aef/4.jpg",
-                pic3: "http://pcdn.500px.net/13646923/d44659c734dfa94d71cdba59e7b2855d21ed8b3f/4.jpg",
-                word: "holiday"
-            }
-        }).done(function (data) {
-          FB.ui(
-            {
-              method    : 'feed',
-              link      : 'http://agile-springs-1772.herokuapp.com/quiz/' + data.id,
-              caption   : '<%= user.name %> challenged you!'
-            },
-            function (response) {
-              // If response is null the user canceled the dialog
-              if (response != null) {
-                logResponse(response);
-              }
-            }
-          );
-        });
-      });
-      <% } %>
-
-    </script>
+        </script>
+        <% } %>
 
 
-            <!--[if IE]>
-      <script type="text/javascript">
-        var tags = ['header', 'section'];
-        while(tags.length)
-          document.createElement(tags.pop());
-      </script>
-    <![endif]-->
-    
-    
-        </head>
+
+        <!--[if IE]>
+        <script type="text/javascript">
+            var tags = ['header', 'section'];
+            while(tags.length) document.createElement(tags.pop());
+        </script>
+        <![endif]-->
+
+
+    </head>
     <body>
 
         <!--[if lt IE 7]>
             <p class="chromeframe">You are using an outdated browser. <a href="http://browsehappy.com/">Upgrade your browser today</a> or <a href="http://www.google.com/chromeframe/?redirect=true">install Google Chrome Frame</a> to better experience this site.</p>
         <![endif]-->
 
-    <div id="fb-root"></div>
-    <script type="text/javascript">
-      window.fbAsyncInit = function() {
-        FB.init({
-          appId      : '<%= app.id %>', // App ID
-          channelUrl : '<%= url_no_scheme('/channel.html') %>', // Channel File
-          status     : true, // check login status
-          cookie     : true, // enable cookies to allow the server to access the session
-          xfbml      : true // parse XFBML
-        });
+        <script type="text/javascript">
+          window.fbAsyncInit = function() {
+            FB.init({
+              appId      : '<%= app.id %>', // App ID
+              channelUrl : '<%= url_no_scheme('/channel.html') %>', // Channel File
+              status     : true, // check login status
+              cookie     : true, // enable cookies to allow the server to access the session
+              xfbml      : true // parse XFBML
+            });
 
-        // Listen to the auth.login which will be called when the user logs in
-        // using the Login button
-        FB.Event.subscribe('auth.login', function(response) {
-          // We want to reload the page now so PHP can read the cookie that the
-          // Javascript SDK sat. But we don't want to use
-          // window.location.reload() because if this is in a canvas there was a
-          // post made to this page and a reload will trigger a message to the
-          // user asking if they want to send data again.
-          window.location = window.location;
-        });
+            // Listen to the auth.login which will be called when the user logs in
+            // using the Login button
+            FB.Event.subscribe('auth.login', function(response) {
+                window.location.reload();
+            });
+          };
 
-        FB.Canvas.setAutoGrow();
-      };
+          // Load the SDK Asynchronously
+          (function(d, s, id) {
+            var js, fjs = d.getElementsByTagName(s)[0];
+            if (d.getElementById(id)) return;
+            js = d.createElement(s); js.id = id;
+            js.src = "//connect.facebook.net/en_US/all.js";
+            fjs.parentNode.insertBefore(js, fjs);
+          }(document, 'script', 'facebook-jssdk'));
+        </script>
 
-      // Load the SDK Asynchronously
-      (function(d, s, id) {
-        var js, fjs = d.getElementsByTagName(s)[0];
-        if (d.getElementById(id)) return;
-        js = d.createElement(s); js.id = id;
-        js.src = "//connect.facebook.net/en_US/all.js";
-        fjs.parentNode.insertBefore(js, fjs);
-      }(document, 'script', 'facebook-jssdk'));
-    </script>
+        <p id="disclaimer">500quiz was made for Facebook World Hack Berlin by Timo Tuominen and Georg Nordi. It uses <a href="https://developers.facebook.com/">Facebook</a> and <a href="http://developers.500px.com/">500px APIs</a>. It is not in any way finalized. You can also find it on <a href="https://github.com/GeorgX/500quiz">github</a>.</p>
 
-    <header class="clearfix">
-      <% if (user) { %>
-
-        <h1>500Quiz</h1>
-
-      <div>
-        <h1>Welcome, <strong><%= user.name %></strong></h1>
-      </div>
-      <% } else { %>
-      <div>
-        <h1>Welcome</h1>
-        <div class="fb-login-button" data-scope="user_likes,user_photos"></div>
-      </div>
-      <% } %>
-    </header>
-
-    <section id="get-started">
-      <p>Welcome to <span>500quiz</span></p>
-    </section>
-
-      <% if (user) { %>
-  <a href="#" class="facebook-button" id="postToWall" data-url="<%= url() %>">
-    <span class="plus">Post to Wall</span>
-  </a>
-  
-        <span>Enter a word to describe the three images you choose: </span><input id="wordToGuess" />
-<% } %>
+        <header class="clearfix">
+          <% if (user) { %>
+            <div>
+                <h1>500Quiz</h1>
+                <p>Welcome, <strong><%= user.name %></strong></p>
+                <p>Click the pictures to choose three.</p>
+            </div>
+          <% } else { %>
+            <div>
+                <h1>Welcome</h1>
+                <div class="fb-login-button" data-scope="user_likes,user_photos"></div>
+                <p>Please login to create a new quiz!</p>
+            </div>
+          <% } %>
+        </header>
 
         <div id="main_content"></div>
+
+        <% if (user) { %>
+        <p>Enter a word to describe the three images you chose:</p>
+        <input id="wordToGuess" />
+        <button id="postToWall">
+            <span class="plus">Ready, post to Facebook!</span>
+        </button>
+        <% } %>
 
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>
         <script>window.jQuery || document.write('<script src="/js/vendor/jquery-1.8.0.min.js"><\/script>')</script>
         <script src="/js/plugins.js"></script>
+
         <script>
 
+            var photo_urls = [];
 
-        var photo_urls = [];
+            $(function() {
 
-        $(function() {
+                var photos = imageData['photos'];
+                var counter = 0;
 
-            var photos = imageData['photos'];
+                for (var i=0; i < photos.length; i++ ) {
+                    var image = photos[i].image_url;
+                    var img = $('<img class="image" src="'+image+'" />');
+                    img
+                        .css("border", "solid 2px transparent")
+                        .click(
+                            (function() {
+                                var index = i;
+                                var temp_img = img;
+                                return function () {
+                                    photo_urls.push(temp_img.attr("src"));
+                                    if ( counter >= 3) {
+                                        return;
+                                    }
+                                    temp_img.css("border", "solid 2px #EE0000");
+                                    counter++;
+                                };
+                            })()
+                        );
 
-            var counter = 0;
-
-
-            for (var i=0; i < photos.length; i++ ) {
-                //console.log(photos[i]);
-
-
-
-                var image = photos[i].image_url;
-                console.log(photos[i]);
-                var img = $('<img class="image" src="'+image+'" />');
-                img.click(( function() {
-                        var index = i;
-                        var temp_img = img;
-                        return function () {
-                           photo_urls.push(temp_img.attr("src"));
-                            if ( counter >= 3) {
-                                return;
-                            }
-                          console.log(index);
-                          temp_img.css("border", "solid 2px #EE0000");
-                          counter++;
-                          console.log(counter);
-                        };
-
-
-                  })()
-                );
-
-                $('#main_content').append(img); //'.photos[i].image_url.'
-            }
-
-        });
+                    $('#main_content').append(img); //'.photos[i].image_url.'
+                }
+            });
 
 
-</script>
-
-        <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
-        <script>
-            var _gaq=[['_setAccount','UA-XXXXX-X'],['_trackPageview']];
-            (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
-            g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
-            s.parentNode.insertBefore(g,s)}(document,'script'));
         </script>
     </body>
 </html>

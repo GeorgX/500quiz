@@ -305,3 +305,9 @@ textarea {
     margin-right : 10px;
     margin-bottom : 10px;
 }
+
+#disclaimer {
+    position: absolute;
+    font-size: 12px;
+    top: 0;
+}
